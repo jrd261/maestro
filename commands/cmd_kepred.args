@@ -1,0 +1,5 @@
+# [NAME] [CLASS] [REQUIRED] "[HUMAN NAME]" "[DESCRIPTION]" 
+# exampleArgumentName bool yes "Example Required Argument" "Description of the Example Argument" 
+fileName string yes "Name of the Kepler FITS file." ""
+outName string yes "Name of the output lightcurve." ""
+nPixels double no "Number of pixels to include per image" ""

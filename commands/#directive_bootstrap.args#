@@ -1,0 +1,4 @@
+# [NAME] [CLASS] [REQUIRED] "[HUMAN NAME]" "[DESCRIPTION]" 
+# exampleArgumentName bool yes "Example Required Argument" "Description of the Example Argument" 
+FrequencyFile string yes "Frequency Files" ""
+TimeSeriesFiles string yes "Time Series Files" ""

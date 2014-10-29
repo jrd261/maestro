@@ -1,0 +1,47 @@
+#!/bin/bash
+# =============================================================================
+# This script will compile Maestro. It takes two input arguments. The first is the maestro root path, the second is the target path where the maestro-<ARCH>-<VERSION>.tar.gz file will live. This script needs some work but its ok for now. I've had some trouble with trailing slashes. -James
+# =============================================================================
+
+
+# =============================================================================
+# 			DETERMINE CPU ARCHITECTURE 
+# =============================================================================
+# Record the architecture of the system. We assume that all non "Darwin" systems are Linux/Unix. We assume all non "x86_64" systems are 32 bit.
+if [ `uname -s` = "Darwin" ]; then ARCH=maci64; 
+else if  [ `uname -m` = "x86_64" ]; then ARCH=glnxa64;else ARCH=glnx86; fi; fi
+# =============================================================================
+
+
+# =============================================================================
+# 		RECORD THE CURRENT MAESTRO VERSION
+# =============================================================================
+VERSION=`cat $1/version | grep MAESTRO_VERSION`
+if [ $? -eq 1 ]; then echo "Could not find Maestro version file in this path."; exit 1; fi
+VERSION=${VERSION:16}
+VERSION=${VERSION:0:2}.${VERSION:2:2}.${VERSION:4:2}
+# =============================================================================
+
+
+# =============================================================================
+# 			COMPILE MAESTRO
+# =============================================================================
+mkdir -p /tmp/maestro/source
+mkdir -p /tmp/maestro/distrib
+cp -r $1/* /tmp/maestro/source
+mcc -o maestro_$ARCH -W main:maestro_$ARCH -T link:exe -d /tmp/maestro/distrib $1/source/maestro.m -a $1/source -R nodisplay -w disable
+cp /tmp/maestro/distrib/maestro_$ARCH /tmp/maestro/source
+CURRENT_DIR=$PWD
+cd /tmp/maestro/source
+if [ "$ARCH" == maci64 ]; then
+        cp -r /tmp/maestro/distrib/maestro_maci64.app /tmp/maestro/source
+fi
+
+tar cvzf maestro-$VERSION-$ARCH.tar.gz *
+cd $CURRENT_DIR
+cp /tmp/maestro/source/maestro-$VERSION-$ARCH.tar.gz $2
+
+rm -r /tmp/maestro 
+# =============================================================================
+
+exit 0

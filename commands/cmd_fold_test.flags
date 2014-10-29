@@ -1,0 +1,6 @@
+# [NAME] [CLASS] [SHORTFLAG] [LONGFLAG] [NUMARGS] [GROUP] [DESCRIPTION] [HELP]
+# exampleFlag bool -f -flag1 0 0 "Flag Description" "Help for Flag"
+period double -p --period 1 1 "" ""
+polynomial double -n --polynomial 1 0 "" ""
+iterations double -i --iterations 1 0 "" ""
+offset double -t0 --offset 1 0

@@ -1,0 +1,11 @@
+Package: Maestro
+Version: 1
+Maintainer: James Dalessio <dalessio.james@gmail.com>
+Architecture: all
+Depends: 
+Description: The MatLab Astronomy Toolkit
+	Maestro 
+
+
+
+

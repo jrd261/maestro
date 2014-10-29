@@ -1,0 +1,2 @@
+# [NAME] [CLASS] [REQUIRED] "[HUMAN NAME]" "[DESCRIPTION]" 
+SEARCH_CRITERIA string no "Command search criteria." "If specified, only commands with matching names and descriptions will be listed."

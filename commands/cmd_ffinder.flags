@@ -1,0 +1,8 @@
+# [NAME] [CLASS] [SHORTFLAG] [LONGFLAG] [NUMARGS] [GROUP] [DESCRIPTION] [HELP]
+# exampleFlag bool -f -flag1 0 0 "Flag Description" "Help for Flag"
+fRange double -f --frequency-range 2 0 "Frequency Range" ""
+fMin double -m --frequency-min 1 0 "Frequency Min" ""
+fMax double -M --frequency-max 1 0 "Frequency Max" ""
+snLevel double -n --signal2noise 1 0 "Signal Noise Level to Terminate" ""
+maxModes double -N --max-iterations 1 0 "Maximum number of modes" ""
+timeFactor double -t --time-factor 1 0 "Multiply all times by this factor." ""

@@ -1,0 +1,4 @@
+# [NAME] [CLASS] [REQUIRED] "[HUMAN NAME]" "[DESCRIPTION]" 
+inFileName string yes "The name of the file." "Specify the name of the file to load." 
+outFileName string no "The name of the output file." "The name of the file to write the data too."
+

@@ -1,0 +1,9 @@
+# [NAME] [CLASS] [SHORTFLAG] [LONGFLAG] [NUMARGS] [GROUP] [DESCRIPTION] [HELP]
+OUTPUT_NAME string -w --output-name 1 0 "Reduction output name." "Specifies the name of the reduction output."
+DATA_PATH string -p --data-path 1 0 "Raw data path." "If specified, the object, bias, dark, and flat files can all be specified as if they were from this path."
+OBJECT_FILES string -o --object-files -1 0 "Object Files" ""
+BIAS_FILES string -b --bias-files -1 0 "Bias files" ""
+DARK_FILES string -d --dark-files -1 0 "Dark files" ""
+FLAT_FILES string -f --flat-files -1 0 "Flat files" ""
+FIELD_NAME string -s --field-name -1 0 "Field names to match" ""
+DUMP_ALL bool -q --dump-all 0 0 "" ""

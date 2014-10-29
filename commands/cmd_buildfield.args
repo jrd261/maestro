@@ -1,0 +1,3 @@
+# [NAME] [CLASS] [REQUIRED] "[HUMAN NAME]" "[DESCRIPTION]" 
+# exampleArgumentName bool yes "Example Required Argument" "Description of the Example Argument" 
+AUTO_FILES string no "Path to Filelists" "The path in which the ASCII filelist 'objlist' and other optional lists reside."

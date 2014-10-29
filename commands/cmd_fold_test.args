@@ -1,0 +1,3 @@
+# [NAME] [CLASS] [REQUIRED] "[HUMAN NAME]" "[DESCRIPTION]" 
+# exampleArgumentName bool yes "Example Required Argument" "Description of the Example Argument" 
+fileName string yes "" ""

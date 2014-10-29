@@ -1,0 +1,4 @@
+# [NAME] [CLASS] [SHORTFLAG] [LONGFLAG] [NUMARGS] [GROUP] [DESCRIPTION] [HELP]
+fftBinSize double -b --timeperft 1 0 "The total time to use for each ft." ""
+freqRange double -f --frequency--range 2 0 "The frequency range to sample." ""
+timeRange double -t --time--range 2 0 "The time range to sample." ""

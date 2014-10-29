@@ -1,0 +1,163 @@
+#!/bin/bash
+# =============================================================================
+# The install/update script installs the latest version of Maestro and the MCR.  
+#		    Copyright (C) 2011 James Dalessio
+# =============================================================================
+
+
+# =============================================================================
+#		             BOOKKEEPING
+# =============================================================================
+# We record and announce the version of the script here for reference.
+echo
+echo "  ====  Maestro Installation/Update Script R3 RC1 2011/08/23  ===  "
+echo 
+# =============================================================================
+
+
+# =============================================================================
+# 			DETERMINE CPU ARCHITECTURE 
+# =============================================================================
+# Record the architecture of the system. We assume that all non "Darwin" systems are Linux/Unix. We assume all non "x86_64" systems are 32 bit.
+if [ `uname -s` = "Darwin" ]; then ARCH=maci64; 
+else if  [ `uname -m` = "x86_64" ]; then ARCH=glnxa64; else ARCH=glnx86; fi; fi
+echo "- System architecture appears to be $ARCH."
+# =============================================================================
+
+
+# =============================================================================
+#     		 FIND DOWNLOAD SOFTWARE ON MACHINE
+# =============================================================================
+# We need to use either wget or curl to download from the WET servers. We look for the curl and wget executables and record which one was found.
+if [ -x /bin/wget -o -x /usr/bin/wget -o -x /usr/local/bin/wget ]; then DSOFT=0; echo "- Found wget for downloading."
+elif [ -x /bin/curl -o -x /usr/bin/curl -o -x /usr/local/bin/curl ]; then DSOFT=1; echo "- Found curl for downloading."
+else echo " Error: Please install wget or curl and try again."; exit 1; fi
+# =============================================================================
+
+
+# =============================================================================
+#			FIND MAESTRO PATH
+# =============================================================================
+# The place where Maestro will be installed will depend on whether you have root priviledges.
+if [ $EUID -ne 0 ]; then MAESTRO=$HOME/.Maestro/program;  echo "- User is not root.";
+else MAESTRO=/opt/maestro;  echo "- User is root."; fi
+if [ ! -d $MAESTRO ]; then mkdir -p $MAESTRO; fi
+echo "- Maestro's path is  \"$MAESTRO\""
+# =============================================================================
+
+
+# =============================================================================
+#     		 DOWNLOAD LATEST VERSION OF MAESTRO
+# =============================================================================
+# We need to use either wget or curl to download from the WET servers. Create the target directory and download the tarball.
+if [ $DSOFT -eq 0 ]; then wget -q software.wholeearthtelescope.org/maestro/maestro-latest-$ARCH.tar.gz -O $MAESTRO/maestro.tar.gz
+else curl -s -o $MAESTRO/maestro.tar.gz software.wholeearthtelescope.org/maestro/maestro-latest-$ARCH.tar.gz; fi
+if [ $? -gt 0 ]; then echo " Error: Could not connect to WET servers. Please try again later."; exit 1; fi
+echo "- Downloaded latest tarball from WET servers."
+# =============================================================================
+
+
+# =============================================================================
+#	          EXTRACT THE LATEST VERSION OF MAESTRO 
+# =============================================================================
+# Extract the latest program tarball (for this architecture).
+tar xzf $MAESTRO/maestro.tar.gz -C $MAESTRO 2>/dev/null
+if [ $? -gt 0 ]; then echo " Error: Tarball appears corrupt."; exit 1; fi
+echo "- Extracted tarball successfully."
+# =============================================================================
+
+
+# =============================================================================
+# 		RECORD THE LATEST VERSIONS
+# =============================================================================
+MCR=`cat $MAESTRO/version | grep RUNTIME_VERSION`; MCR=${MCR:16}
+MV=`cat $MAESTRO/version | grep MAESTRO_VERSION`; MV=${MV:16}
+echo "- Required MCR version is $MCR."
+# =============================================================================
+
+
+# =============================================================================
+#	 		UPDATE/INSTALL MCR 
+# =============================================================================
+if [ ! -e /opt/MCR/v$MCR -a  ! -e $HOME/.MCR/v$MCR -a ! -e /Applications/MATLAB/MATLAB_Compiler_Runtime/v$MCR ]; then		
+	echo
+	echo " Downloading a new MCR from WET servers. This may take some time..."
+	echo
+	# =============================================================================
+	#	          MCR Install for MAC Users
+	# =============================================================================
+	if [ "$ARCH" == "maci64" ]; then 		
+
+		if [ $EUID -ne 0 ]; then echo " Error: To install the required runtime (MCR) on a Mac you must run this script as root."; exit 1; fi	
+
+		if [ $DSOFT -eq 0 ]; then 
+			wget software.wholeearthtelescope.org/maestro/MCRInstaller-$MCR-$ARCH.dmg -O $MAESTRO/MCRInstaller.dmg
+		else 
+			curl -o $MAESTRO/MCRInstaller.dmg software.wholeearthtelescope.org/maestro/MCRInstaller-$MCR-$ARCH.dmg; 
+		fi
+
+		if [ $? -gt 0 ]; then echo " Error: Could not connect to WET servers. Please try again later.";  exit 1; fi
+
+		echo "- Downloaded latest runtime (MCR) from WET servers."
+		echo 
+		echo " Installing runtime. This may take some time..."
+		echo
+
+		hdiutil attach $MAESTRO/MCRInstaller.dmg
+		if [ $? -gt 0 ]; then echo " Error: Failed to mount MCR installer package."; exit 1; fi
+		echo "- Mounted MCR installer disk image."
+		installer -pkg /Volumes/MATLAB_Compiler_Runtime/MCRInstaller.pkg -target /Applications/MATLAB/MATLAB_Compiler_Runtime/
+		if [ $? -gt 0 ]; then echo " Error: Failed to install MCR."; rm -r $MAESTRO/MCRInstaller.dmg; exit 1; fi
+		echo "- Installed MCR successfully."
+		rm $MAESTRO/MCRInstaller.dmg
+	# =============================================================================
+	#	          MCR Install for Linux Users
+	# =============================================================================
+	else 
+		if [ $DSOFT -eq 0 ]; then 
+			wget software.wholeearthtelescope.org/maestro/MCRInstaller-$MCR-$ARCH.bin -O $MAESTRO/MCRInstaller.bin
+		else 
+			curl -o $MAESTRO/MCRInstaller.bin software.wholeearthtelescope.org/maestro/MCRInstaller-$MCR-$ARCH.bin; 
+		fi
+		if [ $? -gt 0 ]; then echo " Error: Could not connect to WET servers. Please try again later."; exit 1; fi
+		echo "- Downloaded latest runtime (MCR) from WET servers."
+		echo 
+		echo " Installing runtime. This may take some time..."
+		echo
+		chmod +x $MAESTRO/MCRInstaller.bin
+		if [ $EUID -eq 0 ]; then 
+			RUNTIME_PATH=/opt/MCR			
+		else
+			RUNTIME_PATH=$HOME/.MCR
+		fi
+	
+		mkdir $RUNTIME_PATH
+		$MAESTRO/MCRInstaller.bin -P bean421.installLocation=$RUNTIME_PATH -silent	
+		if [ $? -gt 0 ]; then echo " Error: Failed to install MCR."; rm -r $MAESTRO/MCRInstaller.bin; exit 1; fi
+		echo "- Installed MCR successfully."
+		rm $MAESTRO/MCRInstaller.bin
+	fi		
+else echo "- MCR is up to date. Nothing to do."; fi
+# =============================================================================
+
+
+# =============================================================================
+#			UPDATE MAESTRO IF NECESSARY
+# =============================================================================
+# If the available Maestro version is newer than the current version install Maestro.
+if [ $EUID -eq 0 ]; then
+	BINPATH=/usr/local/bin
+else
+	BINPATH=$MAESTRO/binaries/
+	mkdir -p $BINPATH
+fi
+
+cp $MAESTRO/scripts/start-maestro $BINPATH/maestro
+cp $MAESTRO/scripts/install-maestro $BINPATH/update-maestro
+
+chmod +x $BINPATH/update-maestro
+chmod +x $BINPATH/maestro
+chmod +x $MAESTRO/maestro_$ARCH
+echo "- Maestro is the latest version ($MV)."
+echo
+# =============================================================================

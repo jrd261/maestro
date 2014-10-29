@@ -1,0 +1,9 @@
+# [NAME] [CLASS] [SHORTFLAG] [LONGFLAG] [NUMARGS] [GROUP] [DESCRIPTION] [HELP]
+initialGuess double -i --par-guess -1 0 "Guess values." ""
+outFileName string -o --out-file 1 0 "Output file" ""
+makePlots boolean -p --plot 0 0 "" ""
+aiXX double -x --x-indicies -1 0 "" ""
+aiYY double -y --y-indicies -1 0 "" ""
+aiDY double -d --d-indicies -1 0 "" ""
+filePar string -f --file-par 1 0 "" ""
+

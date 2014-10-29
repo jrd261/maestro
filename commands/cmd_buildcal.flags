@@ -1,0 +1,8 @@
+# [NAME] [CLASS] [SHORTFLAG] [LONGFLAG] [NUMARGS] [GROUP] [DESCRIPTION] [HELP]
+LOCALE_NAME string -l --locale -1  0 "Name of the locale to use" "The locale to use when build the calibration. If this is not specified the default locale will be used."
+OUTPUT_PATH string -w --outputPath 1 1 "Calibration output path." "Specifies the path where the calibration data will be written."
+DATA_PATH string -p --data-path 1 0 "Raw data path." "If specified, the bias, dark, and flat files can all be specified as if they were fromt this path."
+BIAS_FILES string -b --bias-files -1 0 "Bias files" ""
+DARK_FILES string -d --dark-files -1 0 "Dark files" ""
+FLAT_FILES string -f --flat-files -1 0 "Flat files" ""
+

@@ -1,0 +1,104 @@
+#!/bin/bash
+# =============================================================================
+# The start up script sets up enviornment variables for the MCR and calls the compiled Maestro binary.
+#		    Copyright (C) 2011 James Dalessio
+# =============================================================================
+
+
+# =============================================================================
+#		             BOOKKEEPING
+# =============================================================================
+# We record and announce the version of the script here for reference.
+# Start up script v2 2011/08/22 
+# =============================================================================
+
+
+# =============================================================================
+# 			DETERMINE CPU ARCHITECTURE 
+# =============================================================================
+# Record the architecture of the system. We assume that all non "Darwin" systems are Linux/Unix. We assume all non "x86_64" systems are 32 bit.
+if [ `uname -s` = "Darwin" ]; then ARCH=maci64; 
+else if  [ `uname -m` = "x86_64" ]; then ARCH=glnxa64;else ARCH=glnx86;  fi; fi
+# =============================================================================
+
+
+# =============================================================================
+#			FIND/EXPORT MAESTRO PATHS
+# =============================================================================
+# The place where Maestro will be installed will depend on whether you have root priviledges.
+if [ -e "$HOME/.Maestro/program/version" ]; then MAESTRO_ROOT_PATH=$HOME/.Maestro/program;
+elif [ -e "/opt/maestro/version" ]; then MAESTRO_ROOT_PATH=/opt/maestro;
+else echo " Error: Could not locate Maestro system files."; exit 1;
+fi
+MAESTRO_USER_PATH="$HOME/.Maestro"
+export MAESTRO_ROOT_PATH
+export MAESTRO_USER_PATH
+# =============================================================================
+
+
+# =============================================================================
+# 		RECORD THE ROOT PATH TO THE MCR
+# =============================================================================
+# Obtain the version of the MCR that is to be used with the currently installed version of Maestro. 
+MCR_VERSION=`cat $MAESTRO_ROOT_PATH/version | grep RUNTIME_VERSION` 
+if [ "$ARCH" == "maci64" ]; then MCR_PATH="/Applications/MATLAB/MATLAB_Compiler_Runtime/v${MCR_VERSION:16}";
+elif [ -e "/opt/MCR/v${MCR_VERSION:16}" ]; then MCR_PATH="/opt/MCR/v${MCR_VERSION:16}";
+elif [ -e "$HOME/.MCR/v${MCR_VERSION:16}" ]; then MCR_PATH="$HOME/.MCR/v${MCR_VERSION:16}"; 
+else echo " Error: Could not find Matlab Component Runtime (MCR)."; exit 1;
+fi
+# =============================================================================
+
+
+# =============================================================================
+#			COPY OVER USER CONFIG
+# =============================================================================
+if [ ! -d $MAESTRO_USER_PATH/config ]; then
+	mkdir -p $MAESTRO_USER_PATH
+	cp -r $MAESTRO_ROOT_PATH/user/* $MAESTRO_USER_PATH/
+fi
+# =============================================================================
+
+
+# =============================================================================
+# 		SET UP ENVIORNMENT VARIABLES
+# =============================================================================
+# Insert all of the appropriate cross platform libraries  
+
+XAPPLRESDIR=${MCR_PATH}/X11/app-defaults 
+export XAPPLRESDIR
+
+
+LD_LIBRARY_PATH=$MCR_PATH/runtime/$ARCH 
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MCR_PATH/bin/$ARCH 
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$MCR_PATH/sys/os/$ARCH
+
+
+if [ $ARCH == glnx86 ]; then
+	MCRJRE=$MCR_PATH/sys/java/jre/$ARCH/jre/lib/i386 
+elif [ $ARCH == glnxa64 ]; then
+	MCRJRE=$MCR_PATH/sys/java/jre/$ARCH/jre/lib/amd64
+fi
+
+if [ $ARCH == maci64 ]; then
+	DYLD_LIBRARY_PATH=$LD_LIBRARY_PATH	
+	export DYLD_LIBRARY_PATH
+else
+	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRJRE}/native_threads 
+	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRJRE}/server 
+	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRJRE}/client 
+	LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${MCRJRE} 
+	export LD_LIBRARY_PATH	
+fi
+# =============================================================================
+
+
+# =============================================================================
+# 			EXECUTE MAESTRO
+# =============================================================================
+# Start the program. Cross your fingers.
+if [ $ARCH == maci64 ]; then
+	$MAESTRO_ROOT_PATH/maestro_$ARCH.app/Contents/MacOS/maestro_$ARCH $*
+else	
+	$MAESTRO_ROOT_PATH/maestro_$ARCH $*
+fi
+# =============================================================================

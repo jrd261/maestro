@@ -1,0 +1,294 @@
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#
+#           		BASIC FITS HEADER INFORMATION				      
+#
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+# The following configuration options control the way Maestro imports and translates basic FITS keywords like the date and exposure time.
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+#-------------------------------------------------------------------------------
+# "FITS_HEADER_XXXX_KEYWORD" is a string or cell array of strings that controls the priority of keywords to be used to extract the DATE/TIME/EXPTIME/DARKTIME. 
+FITS_HEADER_DATE_KEYWORD {'DATE-OBS','FRAME'}
+FITS_HEADER_TIME_KEYWORD {'DATE-OBS','TIME-OBS','UTC','UTC-OBS','UTSHUT','FRAME','TIME-BEG','UT'}
+FITS_HEADER_EXPTIME_KEYWORD {'EXPTIME','EXPOSURE','ITIME'}
+FITS_HEADER_DARKTIME_KEYWORD {'DARKTIME','EXPTIME','EXPOSURE','ITIME'}
+#-------------------------------------------------------------------------------
+# "FITS_HEADER_XXXX_REGEXP" sets the regular expressions that will be tried to extract the relavant information from the given keyword.
+# Se matlab regular expressions for more help. We use this to seperate out what part of the value is relavant. For example we would only want "2010/01/01" from "2010/01/01T06:42:42.443" for the DATE.
+#-------------------------------------------------------------------------------
+FITS_HEADER_DATE_REGEXP {'\d*-\d*-\d*'}
+FITS_HEADER_TIME_REGEXP {'\d*:\d*:.*'}
+FITS_HEADER_EXPTIME_REGEXP {'.*'}
+FITS_HEADER_DARKTIME_REGEXP {'.*'}
+#-------------------------------------------------------------------------------
+# "FITS_HEADER_XXXX_FORMAT" sets the priority of the format template to be used to translate the recorded fits value into a Matlab variable.
+# yyyy,yy=year
+# mm,mmm=month
+# dd=day
+# HH=hour
+# MM=minute
+# SS=second
+# FFF=miliseconds
+#-------------------------------------------------------------------------------
+FITS_HEADER_DATE_FORMAT {'yyyy-mm-dd'}
+FITS_HEADER_TIME_FORMAT {'HH:MM:SS.FFF','HH:MM:SS'}
+FITS_HEADER_EXPTIME_FORMAT {'SS','SS.FFF'}
+FITS_HEADER_DARKTIME_FORMAT {'SS','SS.FFF'}
+#-------------------------------------------------------------------------------
+# "FITS_HEADER_SHUTTER_STATE" indicates what event the date above was recorded relavant to, for example the opening of the shutter.
+# It can take the values "open", "mid" and "closed".
+#-------------------------------------------------------------------------------
+FITS_HEADER_SHUTTER_STATE 'open'
+#-------------------------------------------------------------------------------
+# "FITS_HEADER_MAX_BLOCKS" sets the number of 2440 byte header blocks that will be read until until it is assumed the END keyword was missing and the file is corrupt. 
+# This parameter is a sanity check. If a FITS file is corrupt the END keyword will be missing and there will be no well defined end to the header. It would be a terrible idea to read and process each 2440 byte segment of a large file so this parameter will short circuit header reading if we go too far. This value should be a good bit larger than the number of header blocks (usually 1~3) in the FITS files you are working with.
+#-------------------------------------------------------------------------------
+FITS_HEADER_MAX_BLOCKS 20
+#-------------------------------------------------------------------------------
+#>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+FITS_FILE_EXTENSIONS {'fits','fit','fts','FITS','FIT','FTS','Fits','Fit'}
+FITS_BIASLIST_NAMES {'biaslist','blist','zlist','zerolist','biases'}
+FITS_DARKLIST_NAMES {'darklist','dlist','darks'}
+FITS_FLATLIST_NAMES {'flatlist','flist','dflatlist','sflatlist','flats','dflats','sflats'}
+FITS_OBJLIST_NAMES {'objlist','olist'}
+
+FITS_TYPE_AUTODETECT_KEYWORDS {'IMAGETYPE','OBJECT','TYPE'}
+FITS_TYPE_AUTODETECT_BIAS_VALUES {'bias','zero'}
+FITS_TYPE_AUTODETECT_FLAT_VALUES {'flat','dflat','sflat'}
+FITS_TYPE_AUTODETECT_DARK_VALUES {'dark'}
+FITS_TYPE_AUTODETECT_OTHER_VALUES {'focus','test'}
+
+
+
+APERTURE_SIZES 2:.5:20
+
+
+
+
+# Indicate whether or not we will be applying an overscan. If we are the source region should contain something like "[xmin,xmax,ymin,ymax]" indicating where we will take the overscan from (before the image is trimmed). The apply region should indicate (in the same format) the region that overscan should be applied to. If there are multiple overscan regions just add 4 more values to each. For example if we have 2 overscan regions both the source and apply region should look like "[xmin1,xmax1,ymin1,ymax1,xmin2,xmax2,ymin2,ymax2]".
+APPLY_OVERSCAN false
+OS_SOURCE_REGION [1,1024,1000,1024]
+OS_APPLY_REGION [1,1024,1,1024]
+
+# Indicate if we will be trimming the images (always good to take off the edges). The CUT and PASTE sections should look as follows "[xmin1,xmax1,ymin1,ymax1,xmin2,xmax2,ymin2,ymax2,...]. We assume that each trim section comes from a different amplifier so please make sure the gain and readnoise are configured accordingly. Also, please check that each 4 value CUT and PASTE sections are of identical size.
+TRIM_IMAGE false
+TRIM_CUT_REGION [10,1010,10,1010]
+TRIM_PASTE_REGION [1,1001,1,1001]
+
+# The method of calibration. Currently the only way to calibrate images is 'standard'. This is a normal bias, dark, flat subtraction. In the future we may implement weighting images by time and other fun things which aren't usually the best method.
+CALIBRATION_STYLE 'standard'
+
+# The method used to combine bias, darks, and flats. 
+# 'mean' Average the images
+# 'median' Median combine the images
+# More options will be added in the future.
+BIAS_COMBINE_METHOD 'mean'
+DARK_COMBINE_METHOD 'median'
+FLAT_COMBINE_METHOD 'median'
+
+# The number of sections to use to calculate the sky. We divide the image into this many sections and calculate the sky for each. We do a linear fit to the result. This is set to 4 by default. For small images you may want to set this to 1 and for wide fields where seeing can vary across the chip set this to a larger value. It should be a perfect square (1,4,9,16)
+NUMBER_SKY_SECTIONS 4
+
+# The number of pixels to use per sky section to calculate the sky across the image. When we are trying to locate stars on the image we need to subtract off the sky. Rather than taking the median of the entire image we randomly select this number of pixels and take the median of those pixels to estimate the sky value.
+SKY_PIXELS 2000
+
+
+
+
+
+
+# The maximum variability of 
+
+CALCULATE_BRIGHTNESS_RATIO_WITH_STATISTICS false
+NUMBER_BRIGHTNESS_RATIO_ITERATIONS 5
+MAX_SOURCE_VARIABILITY .05
+BRIGHTNESS_MATCH_MAX_REDUCED_CHI2 5
+
+
+STAR_DISTINGUISHABILITY_REDUCED_CHI2 5
+
+
+# USED
+MAX_SOURCE_PERMUTATIONS 100000
+
+# USED
+MAX_SOURCES_PER_PERMUTATION 8
+
+POSITION_MATCH_MAX_ACHI2 1
+
+STARITUDE_DIRECT_MATCH_BONUS 5
+STARITUDE_INDIRECT_MATCH_BONUS 1
+STARITUDE_OFF_IMAGE_PENALTY 0
+STARITUDE_DISAGREEMENT_PENALTY 5
+STARITUDE_CONSISTANCY_PENALTY 1
+STARITUDE_MAX_BAD2GOOD_RATIO .1
+
+
+
+
+
+
+
+
+
+
+
+# The maximum rate at which BIAS images can fail.
+MAX_BIAS_FAILURE_RATE -1
+
+# The maximum count level considered acceptable. All pixels with values above this level (in ADU) will not be used. This is esstially a saturation limit but should be set a bit below saturation where the CCD responds in a non-linear way.
+MAX_LINEAR 40000
+
+
+
+# The gain of the ccd in e-/ADU and the read noise of the ccd in e-. If there is more than one trim paste section (ie. more than one amplifier) this should be a list of gains and read noises for each section. For example if the ccd has two amplifiers the entry for gain might look like this: "GAIN [4,5]". CCD_STAT_SOURCE should be set to 'calibration' if the source for the gain and readnoise is the bias and flat, 'locale' if the source is the locale, and 'automatic' to use try calibration and use locale as a backup.
+CCD_STATISTICS_SOURCE 'automatic'
+GAIN []
+READNOISE []
+
+
+
+
+
+
+# The default set of apertures to use if not configured elsewhere.
+APERTURES [3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+
+
+
+
+# The method for calculating the sky. This can take on the following values:
+# 'sigmareject' - Recursively reject sky pixels outside of X*stdev where X is from SKY_REJECT_SIGMA and we average the remaining pixels.
+# 'mean' - Just take the mean.
+# 'median' -Just take the median.
+# 'iraf' - Take 3*median-2*mean. 
+# 'mode' - Take the mode.
+SKY_CALC_METHOD 'sigmareject'
+SKY_REJECT_SIGMA 2
+
+# The minimum and maximum distance from the star to obtain the sky value in terms of the standard deviation of the star (gaussian PSF).
+SKY_MIN 8
+SKY_MAX 12
+
+
+
+
+
+# The furthest a star can climb from its current position. When searching for stars or just before centering we allow the supposed star position to climb "uphill", meaning to a local maximum. If that local maximum is very far away from where we initially thought the star was something is wrong. This sets the maximum distance (in pixels) a star can climb before we assume something has gone wrong. For very dense star fields a smaller value would be better to ensure we are not jumping to a different star.
+MAX_CLIMB 10
+
+# This controls how many pixels are included in the search for higher pixels surrounding the supposed star position. Small is best for low SN images and crowded images (or two stars right next to eachother). Large is good for large PSFs and well spaced stars.
+CLIMB_BOX_SIZE 3
+
+
+# What is a hash match?
+# The values quoted below under "HASH_BREAK_POINT" and "MAX_HASH" refer to how well a set of known and unknown stars seem to agree. The value is how far the worst matching star in the set (in sigma) is from the known position.
+
+# The break point for star hashes. When cycling through different permutations of stars and trying to match an image with a known field, a match with better than this value with terminate the search and that match will be used. This can save some time for large numbers of hashed stars.
+HASH_BREAK_POINT .05
+
+
+
+
+
+
+# The radius of pixels to use when centering a star (in sigma). I have run monte carlo simulations and for a huge range of S/N 2 is ideal.
+STAR_CENTERING_SIGMA_BOX 2
+
+
+# Here are a bunch of fitting parameters for star centering. This is an M-L centering algorithm.
+# The slowest we would let the FIT convrge. (RF^2/R0^2)
+STAR_CENTERING_MIN_CONVERGENCE .95
+# The fastest we would let the fit converge
+STAR_CENTERING_MAX_CONVERGENCE .5
+
+# The most the standard deviation can change whilst centering (percentage of 1). This is too make ensure the fit doesn't diverge. I'd say .8 is resonable.
+STAR_CENTERING_MAX_SIGMA_CHANGE .8
+
+# Here are a bunch of parameters for preliminary centering fits. This will never be the final centering on a star.
+
+# The tolerance for a prelim centering fit.
+STAR_CENTERING_PRELIMINARY_FIT_TOLERANCE 1E-5
+# The initial lambda for preliminary centering fits.
+STAR_CENTERING_PRELIMINARY_FIT_LAMBDA .01
+# The max number of iterations for a prelim centering.
+STAR_CENTERING_PRELIMINARY_FIT_ITERATIONS 10
+# How much to change M-L lambda if we are converging to fast or slow.
+STAR_CENTERING_PRELIMINARY_FIT_LAMBDA_MULTIPLIER 10
+# The slowest we would let the FIT convrge. (RF^2/R0^2)
+STAR_CENTERING_PRELIMINARY_FIT_MIN_CONVERGENCE .95
+
+# Everything here is related to finding stars.
+
+# Pixels above this S/N will be checked if they are part of a star. For shotty images you can lower this number.
+STAR_FINDING_NOISE_THRESHOLD 8
+
+# Max percentage of image which will be considered above SN threshold. If more than this percentage of image is above that S/N threshold we will only take this percentage of those pixels (the highest).
+STAR_FINDING_MAX_PERCENT_POSSIBLE_STARS .05
+
+# The estimated standard deviation of the psf on image (sigma in pixels). This is used for preliminary centering and searching for stars.
+STAR_FINDING_SIGMA_ESTIMATED 2
+
+# The search box size for higher pixels (in estimated sigma above) in order to conclude that a pixel is not the center of a star.
+STAR_FINDING_SEARCH_BOX_SIZE 2
+STAR_FINDING_MAX_STARS 30
+# The sigma at which we consider stars to be cosmic rays. If you have tiny PSFs you'll have to lower this.
+STAR_FINDING_COSMIC_RAY_CUTOFF .75
+
+# The sigma at which we consider the stars to be galaxies or large objects. If you have a masshuhsive PSF you would need to raise this. It gets rid of extended objects.
+STAR_FINDING_GALAXY_CUTOFF 10
+
+
+
+
+CHECK_BLOCK_SIZE false
+FITS_BLOCK_SIZE 2880
+
+
+
+
+
+CENTERING_METHOD 'STANDARD'
+CENTERING_MODEL 'GAUSSIAN'
+CENTERING_SIGMA_BOX_SIZE 2
+
+
+
+
+
+
+FIELD_ROTATION_STYLE 'AUTO'
+FIELD_ROTATION_DATA []
+
+
+
+
+
+
+STAR_LABELING_FILENAME ''
+STAR_LABELING_PERMUTATIONS 100000
+STAR_LABELING_MAX_STARS_PER_HASH 8
+STAR_LABELING_MAX_MATCH_DISTANCE 2
+STAR_LABELING_FORCE_GEOMETRY false
+
+
+
+
+
+
+
+
+
+
+DEV_FIELD_BUILDING_NUMBER_STARS 10
+
+DEV_FIELD_BUILDING_SN_THRESHOLD 8
+DEV_FIELD_BUILDING_TOTAL_SN_THRESHOLD 20
+DEV_FIELD_BUILDING_TOTAL_MAX_LINEAR 50000
+
+
+
+
+DEV_FIELD_BUILDING_SEARCH_BOX_SIZE 4
+DEV_FIELD_BUILDING_CENTERING_BOX_SIZE 2 #In Sigma

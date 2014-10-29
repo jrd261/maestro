@@ -1,0 +1,6 @@
+# [NAME] [CLASS] [SHORTFLAG] [LONGFLAG] [NUMARGS] [GROUP] [DESCRIPTION] [HELP]
+# exampleFlag bool -f -flag1 0 0 "Flag Description" "Help for Flag"
+doWriteHeader bool -H --header 0 0 "Whether to include the header." ""
+doConvertToMagnitudes bool -m --Magnitudes 0 0 "Convert to magnitudes." ""
+wqedChannels double -C --channels -1 0 "Channels divided by from wqed file." ""
+doNormalize bool -N --do-normalize 0 0 "Renormalize magnitudes to 0." ""

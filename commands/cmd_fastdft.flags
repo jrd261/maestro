@@ -1,0 +1,6 @@
+# [NAME] [CLASS] [SHORTFLAG] [LONGFLAG] [NUMARGS] [GROUP] [DESCRIPTION] [HELP]
+# exampleFlag bool -f -flag1 0 0 "Flag Description" "Help for Flag"
+makePlot bool -p --plot 0 0 "Make a plot of the data." ""
+writeOut bool -P --print 0 0  "Write the DFT to the prompt." ""
+
+

@@ -1,0 +1,5 @@
+# [NAME] [CLASS] [SHORTFLAG] [LONGFLAG] [NUMARGS] [GROUP] [DESCRIPTION] [HELP]
+# exampleFlag bool -f -flag1 0 0 "Flag Description" "Help for Flag"
+
+FrequencyFileName string -f --frequency-file-name 1 1 "" ""
+

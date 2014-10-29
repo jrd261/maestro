@@ -1,0 +1,5 @@
+# [NAME] [CLASS] [REQUIRED] "[HUMAN NAME]" "[DESCRIPTION]" 
+# exampleArgumentName bool yes "Example Required Argument" "Description of the Example Argument" 
+lcFileName string yes "Name of file"
+outFileName string no "Out file"
+

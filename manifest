@@ -1,0 +1,30 @@
+# The manifest provides the formal name, aliases, and descriptions for all Maestro commands. The formal name is the internal name to which to the program references the command. Aliases are the names the user will actually use and the synopsis should be a concise description.
+# The form of this file should be rows of data with the following format...
+# <Formal Name> "<Aliases>" "<Synopsis>"
+# Here is an example entry for a command...
+# cmd_run "jog sprint" "Gets your feet moving.'
+
+cmd_commands "commands" "View a list of available commands."
+cmd_help "help" "Get some basic help with Maestro."
+cmd_command "command cmd" "View a detailed description of a command."
+cmd_reduce "reduce red" "Execute a high speed photometry reduction."
+cmd_reduce_dev "reddev" "Execute a high speed photometry reduction DEV."
+#cmd_spectrogram_sthomp "sts spect" "Generate a spectrogram from a modified version of Susan's script."
+cmd_buildfield "buildfield" "Build a star field"
+#cmd_runfit "runfit" "Running non linear fit"
+cmd_buildoc "buildoc" "Build an O-C diagram"
+cmd_kepred "kepred" "Reduce some kepler data"
+cmd_ffinder "ffinder" "Find frequencies in a light curve"
+cmd_saao2wqed "saao2wqed" "Convert SAAO data to a wqed file"
+cmd_fit "fit" "Fits data from a file or group of files."
+cmd_meld "meld" "Merge data sets."
+cmd_meldh "meldh" "Merge data sets horizontally."
+cmd_fastdft "dft" "Take the dft of some data."
+cmd_inspect "inspect" "Inspect some fits files"
+cmd_whtjoin "whtjoin" "Join WHT data."
+cmd_calibrate "calibrate cal" "Calibrate some images"
+cmd_fold "fold" "Fold a light curve"
+cmd_lcconvert "lcconvert" "Convert wqed lc file to a better format."
+cmd_fold_test "fold_test" ""
+directive_bootstrap "bootstrap" "Measure frequencies using multiple time series."
+cmd_kep2lc "kep2lc" ""

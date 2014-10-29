@@ -1,0 +1,2 @@
+# [NAME] [CLASS] [REQUIRED] "[HUMAN NAME]" "[DESCRIPTION]" 
+COMMAND_NAME string yes "Command Name" "The name of the command of which you want to see information about."

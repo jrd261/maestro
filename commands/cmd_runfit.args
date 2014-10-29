@@ -1,0 +1,7 @@
+# [NAME] [CLASS] [REQUIRED] "[HUMAN NAME]" "[DESCRIPTION]" 
+# exampleArgumentName bool yes "Example Required Argument" "Description of the Example Argument" 
+dataFileName string yes "Data file name" ""
+freqFileName string yes "Freq list file" ""
+timePerBin double yes "Time per bin" ""
+timeIncrement double yes "Time increment" ""
+

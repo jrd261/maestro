@@ -1,0 +1,12 @@
+# [NAME] [CLASS] [SHORTFLAG] [LONGFLAG] [NUMARGS] [GROUP] [DESCRIPTION] [HELP]
+# exampleFlag bool -f -flag1 0 0 "Flag Description" "Help for Flag"
+
+MinimumFrequency double -m --minimum-frequency 1 0 "" ""
+MaximumFrequency double -M --maximum-frequency 1 0 "" ""
+MaximumNumberModes double -N --maximum-number-modes 1 0 "" ""
+MinimumSignalToNoise double -n --minimum-signal-to-noise 1 0 "" ""
+StartingFileIndex double -i --starting-file-index 1 0 "" ""
+OutputDirectoryName string -o --output-directory-name 1 0 "" ""
+FrequencyFileName string -f --frequency-file 1 0 "" ""
+
+
