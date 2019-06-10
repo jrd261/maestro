@@ -4,6 +4,7 @@
 #		    Copyright (C) 2011 James Dalessio
 # =============================================================================
 
+URL="darc.physics.udel.edu/maestro"
 
 # =============================================================================
 #		             BOOKKEEPING
@@ -50,8 +51,8 @@ echo "- Maestro's path is  \"$MAESTRO\""
 #     		 DOWNLOAD LATEST VERSION OF MAESTRO
 # =============================================================================
 # We need to use either wget or curl to download from the WET servers. Create the target directory and download the tarball.
-if [ $DSOFT -eq 0 ]; then wget -q software.wholeearthtelescope.org/maestro/maestro-latest-$ARCH.tar.gz -O $MAESTRO/maestro.tar.gz
-else curl -s -o $MAESTRO/maestro.tar.gz software.wholeearthtelescope.org/maestro/maestro-latest-$ARCH.tar.gz; fi
+if [ $DSOFT -eq 0 ]; then wget -q $URL/maestro-latest-$ARCH.tar.gz -O $MAESTRO/maestro.tar.gz
+else curl -s -o $MAESTRO/maestro.tar.gz $URL/maestro-latest-$ARCH.tar.gz; fi
 if [ $? -gt 0 ]; then echo " Error: Could not connect to WET servers. Please try again later."; exit 1; fi
 echo "- Downloaded latest tarball from WET servers."
 # =============================================================================
@@ -91,9 +92,9 @@ if [ ! -e /opt/MCR/v$MCR -a  ! -e $HOME/.MCR/v$MCR -a ! -e /Applications/MATLAB/
 		if [ $EUID -ne 0 ]; then echo " Error: To install the required runtime (MCR) on a Mac you must run this script as root."; exit 1; fi	
 
 		if [ $DSOFT -eq 0 ]; then 
-			wget software.wholeearthtelescope.org/maestro/MCRInstaller-$MCR-$ARCH.dmg -O $MAESTRO/MCRInstaller.dmg
+			wget $URL/MCRInstaller-$MCR-$ARCH.dmg -O $MAESTRO/MCRInstaller.dmg
 		else 
-			curl -o $MAESTRO/MCRInstaller.dmg software.wholeearthtelescope.org/maestro/MCRInstaller-$MCR-$ARCH.dmg; 
+			curl -o $MAESTRO/MCRInstaller.dmg $URL/MCRInstaller-$MCR-$ARCH.dmg; 
 		fi
 
 		if [ $? -gt 0 ]; then echo " Error: Could not connect to WET servers. Please try again later.";  exit 1; fi
@@ -115,9 +116,9 @@ if [ ! -e /opt/MCR/v$MCR -a  ! -e $HOME/.MCR/v$MCR -a ! -e /Applications/MATLAB/
 	# =============================================================================
 	else 
 		if [ $DSOFT -eq 0 ]; then 
-			wget software.wholeearthtelescope.org/maestro/MCRInstaller-$MCR-$ARCH.bin -O $MAESTRO/MCRInstaller.bin
+			wget $URL/MCRInstaller-$MCR-$ARCH.bin -O $MAESTRO/MCRInstaller.bin
 		else 
-			curl -o $MAESTRO/MCRInstaller.bin software.wholeearthtelescope.org/maestro/MCRInstaller-$MCR-$ARCH.bin; 
+			curl -o $MAESTRO/MCRInstaller.bin $URL/MCRInstaller-$MCR-$ARCH.bin; 
 		fi
 		if [ $? -gt 0 ]; then echo " Error: Could not connect to WET servers. Please try again later."; exit 1; fi
 		echo "- Downloaded latest runtime (MCR) from WET servers."
